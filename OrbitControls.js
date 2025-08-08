@@ -31,7 +31,7 @@ const OrbitControls = (() => {
 	class _OrbitControls extends THREE.Controls {
 
 		/**
-		 * @param {ThreeCamera} object
+		 * @param {THREE.PerspectiveCamera} object
 		 * @param {HTMLCanvasElement | null} domElement
 		 */
 		constructor( object, domElement = null ) {
@@ -154,7 +154,7 @@ const OrbitControls = (() => {
 			 */
 			this._pointers = [];
 			/**
-			 * @type {Object<number, ThreeVector2>}
+			 * @type {Object<number, THREE.Vector2>}
 			 */
 			this._pointerPositions = {};
 
@@ -560,7 +560,7 @@ const OrbitControls = (() => {
 
 		/**
 		 * @param {number} distance
-		 * @param {ThreeMatrix4} objectMatrix
+		 * @param {THREE.Matrix4} objectMatrix
 		 */
 		_panLeft( distance, objectMatrix ) {
 
@@ -573,7 +573,7 @@ const OrbitControls = (() => {
 
 		/**
 		 * @param {number} distance
-		 * @param {ThreeMatrix4} objectMatrix
+		 * @param {THREE.Matrix4} objectMatrix
 		 */
 		_panUp( distance, objectMatrix ) {
 

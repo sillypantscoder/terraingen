@@ -6,25 +6,7 @@
  */
 'use strict';
 
-/**
- * @typedef {Color} ThreeColor
- * @typedef {Vector3} ThreeVector3
- * @typedef {Vector2} ThreeVector2
- * @typedef {BufferGeometry} ThreeBufferGeometry
- * @typedef {WireframeGeometry} ThreeWireframeGeometry
- * @typedef {EdgesGeometry} ThreeEdgesGeometry
- * @typedef {Mesh} ThreeMesh
- * @typedef {Camera} ThreeCamera
- * @typedef {Matrix4} ThreeMatrix4
- * @typedef {Raycaster} ThreeRaycaster
- * @typedef {Ray} ThreeRay
- * @typedef {Renderer} ThreeRenderer
- * @typedef {Object3D} ThreeObject3D
- * @typedef {_Light} ThreeLight
- * @typedef {Controls} ThreeControls
- */
-
-const THREE = (() => {
+{
 
 	const REVISION = '172dev';
 
@@ -54721,7 +54703,16 @@ const THREE = (() => {
 
 	}
 
-	return {
+	/**
+	 * @typedef {Controls} THREE.Controls
+	 * @typedef {_Light} THREE.Light
+	 * @typedef {Matrix4} THREE.Matrix4
+	 * @typedef {Object3D} THREE.Object3D
+	 * @typedef {PerspectiveCamera} THREE.PerspectiveCamera
+	 * @typedef {Vector2} THREE.Vector2
+	 * @typedef {Vector3} THREE.Vector3
+	*/
+	var THREE = {
 		ACESFilmicToneMapping: ACESFilmicToneMapping,
 		AddEquation: AddEquation,
 		AddOperation: AddOperation,
@@ -55138,4 +55129,4 @@ const THREE = (() => {
 		createCanvasElement: createCanvasElement,
 	}
 
-})();
+}

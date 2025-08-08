@@ -1,21 +1,39 @@
 class SceneObject {
 	constructor() {
-		/** @type {ThreeObject3D[]} */
+		/** @type {THREE.Object3D[]} */
 		this.three_objects = []
 	}
 }
 class Box extends SceneObject {
-	constructor() {
+	/**
+	 * @param {THREE.Vector3} centerPos
+	 * @param {THREE.Vector3} size
+	 * @param {number} color
+	 */
+	constructor(centerPos, size, color) {
 		super()
-		var geometry = new THREE.BoxGeometry(1, 1, 1);
-		var material = new THREE.MeshStandardMaterial({ color: 0xff0000 })
-		var mesh = new THREE.Mesh(geometry, material)
-		this.three_objects.push(mesh)
+		var geometry = new THREE.BoxGeometry(size.x, size.y, size.z);
+		geometry.translate(centerPos.x, centerPos.y, centerPos.z);
+		var material = new THREE.MeshStandardMaterial({ color });
+		var mesh = new THREE.Mesh(geometry, material);
+		this.three_objects.push(mesh);
+	}
+	/**
+	 * @param {THREE.Vector3} cornerPos
+	 * @param {THREE.Vector3} size
+	 * @param {number} color
+	 */
+	static fromCorner(cornerPos, size, color) {
+		return new Box(new THREE.Vector3(
+			cornerPos.x + (size.x / 2),
+			cornerPos.y + (size.y / 2),
+			cornerPos.z + (size.z / 2)
+		), size, color)
 	}
 }
 class Light extends SceneObject {
 	/**
-	 * @param {ThreeLight} light
+	 * @param {THREE.Light} light
 	 */
 	constructor(light) {
 		super()
@@ -36,11 +54,11 @@ class DirectionalLight extends Light {
 	/**
 	 * @param {number} color
 	 * @param {number} intensity
-	 * @param {ThreeVector3} direction
+	 * @param {THREE.Vector3} direction
 	 */
 	constructor(color, intensity, direction) {
 		var light = new THREE.DirectionalLight(color, intensity)
-		light.position.copy(direction.clone().multiplyScalar(-1))
+		light.position.copy(direction.clone().multiplyScalar(-5))
 		light.target.position.set(0, 0, 0)
 		super(light)
 	}
@@ -51,16 +69,14 @@ class Scene {
 		// object list
 		/** @type {SceneObject[]} */
 		this.objects = []
-		/** @type {ThreeControls | null} */
+		/** @type {THREE.Controls | null} */
 		this.controls = null
 		// Scene/camera
 		this.scene = new THREE.Scene();
 		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 		// Setup the renderer
-		// this.renderer = new THREE.WebGLRenderer({ alpha: true });
-		// this.renderer.setClearColor(0x000000, 0);
-		this.renderer = new THREE.WebGLRenderer();
-		this.renderer.setClearColor(0x0000ff, 0);
+		this.renderer = new THREE.WebGLRenderer({ alpha: true });
+		this.renderer.setClearColor(0x000000, 0);
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(this.renderer.domElement);
 	}
