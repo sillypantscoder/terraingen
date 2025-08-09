@@ -31,6 +31,97 @@ class Box extends SceneObject {
 		), size, color)
 	}
 }
+class Geometry extends SceneObject {
+	/**
+	 * @typedef {{ point1: THREE.Vector3, point2: THREE.Vector3, point3: THREE.Vector3 }} Triangle
+	 * @param {Triangle[]} triangles
+	 * @param {number} color
+	 */
+	constructor(triangles, color) {
+		super()
+		this.triangles = triangles
+		// create mesh
+		let vertices = new Float32Array(triangles.flatMap((triangle) => [
+			...triangle.point1.toArray(),
+			...triangle.point2.toArray(),
+			...triangle.point3.toArray()
+		]));
+		const geometry = new THREE.BufferGeometry();
+		geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+		const material = new THREE.MeshStandardMaterial({ color, side: THREE.DoubleSide })
+		const mesh = new THREE.Mesh(geometry, material);
+		this.three_objects.push(mesh)
+	}
+	/**
+	 * @param {THREE.Vector3} pos
+	 * @param {THREE.Vector3} size
+	 * @returns {Object<string, Triangle[]>}
+	 */
+	static createCuboid(pos, size) {
+		return {
+			"-1,0,0": Geometry.createPlaneX(new THREE.Vector3(pos.x         , pos.y, pos.z), new THREE.Vector2(size.z, size.y)),
+			 "1,0,0": Geometry.createPlaneX(new THREE.Vector3(pos.x + size.x, pos.y, pos.z), new THREE.Vector2(size.z, size.y)),
+			"0,-1,0": Geometry.createPlaneY(new THREE.Vector3(pos.x, pos.y         , pos.z), new THREE.Vector2(size.x, size.z)),
+			 "0,1,0": Geometry.createPlaneY(new THREE.Vector3(pos.x, pos.y + size.y, pos.z), new THREE.Vector2(size.x, size.z)),
+			"0,0,-1": Geometry.createPlaneZ(new THREE.Vector3(pos.x, pos.y, pos.z         ), new THREE.Vector2(size.x, size.y)),
+			 "0,0,1": Geometry.createPlaneZ(new THREE.Vector3(pos.x, pos.y, pos.z + size.z), new THREE.Vector2(size.x, size.y))
+		}
+	}
+	/**
+	 * @param {THREE.Vector3} pos
+	 * @param {THREE.Vector2} size
+	 */
+	static createPlaneX(pos, size) {
+		return [
+			{
+				point1: new THREE.Vector3(pos.x, pos.y, pos.z),
+				point2: new THREE.Vector3(pos.x, pos.y + size.y, pos.z),
+				point3: new THREE.Vector3(pos.x, pos.y, pos.z + size.x)
+			},
+			{
+				point1: new THREE.Vector3(pos.x, pos.y + size.y, pos.z + size.x),
+				point2: new THREE.Vector3(pos.x, pos.y + size.y, pos.z),
+				point3: new THREE.Vector3(pos.x, pos.y, pos.z + size.x)
+			}
+		]
+	}
+	/**
+	 * @param {THREE.Vector3} pos
+	 * @param {THREE.Vector2} size
+	 */
+	static createPlaneY(pos, size) {
+		return [
+			{
+				point1: new THREE.Vector3(pos.x, pos.y, pos.z),
+				point2: new THREE.Vector3(pos.x, pos.y, pos.z + size.y),
+				point3: new THREE.Vector3(pos.x + size.x, pos.y, pos.z),
+			},
+			{
+				point1: new THREE.Vector3(pos.x + size.x, pos.y, pos.z + size.y),
+				point2: new THREE.Vector3(pos.x, pos.y, pos.z + size.y),
+				point3: new THREE.Vector3(pos.x + size.x, pos.y, pos.z),
+			}
+		]
+	}
+	/**
+	 * @param {THREE.Vector3} pos
+	 * @param {THREE.Vector2} size
+	 */
+	static createPlaneZ(pos, size) {
+		return [
+			{
+				point1: new THREE.Vector3(pos.x, pos.y, pos.z),
+				point2: new THREE.Vector3(pos.x, pos.y + size.y, pos.z),
+				point3: new THREE.Vector3(pos.x + size.x, pos.y, pos.z),
+			},
+			{
+				point1: new THREE.Vector3(pos.x + size.x, pos.y + size.y, pos.z),
+				point2: new THREE.Vector3(pos.x, pos.y + size.y, pos.z),
+				point3: new THREE.Vector3(pos.x + size.x, pos.y, pos.z),
+			}
+		]
+	}
+}
 class Light extends SceneObject {
 	/**
 	 * @param {THREE.Light} light
@@ -69,7 +160,7 @@ class Scene {
 		// object list
 		/** @type {SceneObject[]} */
 		this.objects = []
-		/** @type {THREE.Controls | null} */
+		/** @type {(THREE.Controls & { target: THREE.Vector3 }) | null} */
 		this.controls = null
 		// Scene/camera
 		this.scene = new THREE.Scene();

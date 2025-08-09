@@ -20,7 +20,7 @@ class Block {
 		isOpaque() { return true; }
 	}
 	static Grass = class Grass extends Block {
-		getColor() { return 0x116600; }
+		getColor() { return 0x22BB00; }
 		isOpaque() { return true; }
 	}
 }
@@ -43,8 +43,17 @@ class ChunkGenerator {
 	 * @returns {void}
 	 */
 	generateChunk(x, y, z) { throw new Error("ChunkGenerator is an abstract class, generateChunk must be overridden"); }
+	/**
+	 * @abstract
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 * @returns {boolean}
+	 */
+	isChunkGenerated(x, y, z) { throw new Error("ChunkGenerator is an abstract class, isChunkGenerated must be overridden"); }
 }
 
+/** @typedef {Block | null} BlockData A block state */
 /**
  * @template T The chunk information to store
  */
@@ -62,11 +71,11 @@ class Chunk {
 		}
 		/** @type {T | null} */
 		this.dimensionData = null
-		/** @type {(Block | null)[][][]} */
+		/** @type {BlockData[][][]} */
 		this.blocks = []
 		// Fill blocks with air
 		for (var x = 0; x < 16; x++) {
-			/** @type {(Block | null)[][]} */
+			/** @type {BlockData[][]} */
 			var layer = []
 			this.blocks.push(layer)
 			for (var y = 0; y < 16; y++) {
@@ -86,6 +95,8 @@ class Chunk {
 	 * @param {Block | null} state
 	 */
 	setBlock(cx, cy, cz, state) {
+		if (cx < 0 || cy < 0 || cz < 0) return;
+		if (cx > 15 || cy > 15 || cz > 15) return;
 		this.blocks[cx][cy][cz] = state
 	}
 	/**
@@ -95,6 +106,8 @@ class Chunk {
 	 * @returns {Block | null}
 	 */
 	getBlock(cx, cy, cz) {
+		if (cx < 0 || cy < 0 || cz < 0) return null;
+		if (cx > 15 || cy > 15 || cz > 15) return null;
 		return this.blocks[cx][cy][cz]
 	}
 	/**
@@ -112,24 +125,6 @@ class Chunk {
 		if (! this.getBlock(x, y, z - 1)?.isOpaque()) return false;
 		if (! this.getBlock(x, y, z + 1)?.isOpaque()) return false;
 		return true;
-	}
-	getBoxes() {
-		var boxes = []
-		for (var x = 0; x < 16; x++) {
-			for (var y = 0; y < 16; y++) {
-				for (var z = 0; z < 16; z++) {
-					var state = this.getBlock(x, y, z)
-					if (state == null) continue;
-					if (this.isBlockHidden(x, y, z)) continue;
-					boxes.push(Box.fromCorner(
-						new THREE.Vector3((this.chunkPos.x * 16) + x, (this.chunkPos.y * 16) + y, (this.chunkPos.z * 16) + z),
-						new THREE.Vector3(1, 1, 1),
-						state.getColor()
-					))
-				}
-			}
-		}
-		return boxes
 	}
 }
 
@@ -167,7 +162,7 @@ class World {
 	 * @param {number} z
 	 */
 	generateChunk(x, y, z) {
-		this.chunkGenerator.generateChunk(x, y, z)
+		if (! this.chunkGenerator.isChunkGenerated(x, y, z)) this.chunkGenerator.generateChunk(x, y, z)
 		return this.getChunk(x, y, z)
 	}
 }

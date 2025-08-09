@@ -173,7 +173,10 @@ class NoiseTerrainChunkGenerator extends ChunkGenerator {
 		// Go through all the blocks
 		for (var cx = 0; cx < 16; cx++) {
 			for (var cz = 0; cz < 16; cz++) {
-				var columnHeight = this.world.noise.noiseXYZ((16*x)+cx, (16*z)+cz, 0) * 5
+				var columnHeight = this.world.noise.noiseXYZ(
+					((16*x)+cx) / 4,
+					((16*z)+cz) / 4,
+				0) * 5
 				for (var cy = 0; cy < 16; cy++) {
 					if ((16*y)+cy <= columnHeight) chunk.setBlock(cx, cy, cz, new Block.Grass())
 					if ((16*y)+cy <= columnHeight - 1) chunk.setBlock(cx, cy, cz, new Block.Dirt())
@@ -181,6 +184,17 @@ class NoiseTerrainChunkGenerator extends ChunkGenerator {
 				}
 			}
 		}
+		// Mark as generated
+		chunk.dimensionData = {}
+	}
+	/**
+	 * @param {number} x
+	 * @param {number} y
+	 * @param {number} z
+	 */
+	isChunkGenerated(x, y, z) {
+		var chunk = this.world.getChunk(x, y, z)
+		return chunk.dimensionData != null
 	}
 }
 
