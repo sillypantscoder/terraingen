@@ -4,6 +4,9 @@ class SceneObject {
 		this.three_objects = []
 	}
 }
+class TickingSceneObject extends SceneObject {
+	tick() {}
+}
 class Box extends SceneObject {
 	/**
 	 * @param {THREE.Vector3} centerPos
@@ -179,6 +182,13 @@ class Scene {
 		}
 	}
 	renderFrame() {
+		// Tick objects
+		this.objects.forEach((v) => {
+			if (v instanceof TickingSceneObject) {
+				v.tick()
+			}
+		})
+		// Render
 		this.renderer.render(this.scene, this.camera)
 	}
 	/**
