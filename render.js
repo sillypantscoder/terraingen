@@ -27,7 +27,8 @@ class Rendering {
 	 * @param {boolean} topOnly
 	 */
 	static getPlanesForChunk(chunk, topOnly) {
-		var planes = []
+		/** @type {Object<string, Triangle[]>} */
+		var planes = {}
 		for (var x = 0; x < 16; x++) {
 			for (var z = 0; z < 16; z++) {
 				for (var y = 15; y >= 0; y--) {
@@ -46,16 +47,23 @@ class Rendering {
 						new THREE.Vector3(0, 0, 1)
 					]) {
 						// Create geometry for this face, unless there is an opaque block there
-						let blockOnThisFace = chunk.getBlock(blockOrigin.x + face.x, blockOrigin.y + face.y, blockOrigin.z + face.z)
+						let blockOnThisFace = chunk.getBlock(x + face.x, y + face.y, z + face.z)
 						if (! blockOnThisFace?.isOpaque()) {
 							let faceGeometry = allFaces[`${face.x},${face.y},${face.z}`]
-							planes.push(new Geometry(faceGeometry, state.getColor()))
+							if (! Object.keys(planes).includes(state.getColor().toString())) planes[state.getColor().toString()] = []
+							planes[state.getColor().toString()].push(...faceGeometry)
 						}
 					}
 					if (topOnly) break;
 				}
 			}
 		}
-		return planes
+		var meshes = []
+		for (var _color of Object.keys(planes)) {
+			var triangles = planes[_color]
+			var color = Number(_color)
+			meshes.push(new Geometry(triangles, color))
+		}
+		return meshes
 	}
 }

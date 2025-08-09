@@ -48,6 +48,7 @@ class Geometry extends SceneObject {
 		]));
 		const geometry = new THREE.BufferGeometry();
 		geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+		geometry.computeVertexNormals()
 		const material = new THREE.MeshStandardMaterial({ color, side: THREE.DoubleSide })
 		const mesh = new THREE.Mesh(geometry, material);
 		this.three_objects.push(mesh)

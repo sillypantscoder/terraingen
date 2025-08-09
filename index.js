@@ -1,9 +1,9 @@
 // Create scene
 var scene = new Scene()
 
-scene.camera.position.set(16, 8, 16)
 scene.addOrbitControls()
-scene.controls?.target.set(16, 0, 16)
+scene.camera.position.set(16, 8, 16)
+scene.controls?.target.set(scene.camera.position.x, 0, scene.camera.position.z)
 scene.controls?.update()
 
 // Generate world
@@ -11,7 +11,7 @@ var world = new World(1, (world) => new NoiseTerrainChunkGenerator(world))
 for (let cx of [-1, 0, 1]) {
 	for (let cy of [-1, 0, 1]) {
 		for (let cz of [-1, 0, 1]) {
-			Rendering.getBoxesForChunk(world.generateChunk(cx, cy, cz), false).forEach((v) => scene.add(v))
+			Rendering.getPlanesForChunk(world.generateChunk(cx, cy, cz), false).forEach((v) => scene.add(v))
 		}
 	}
 }
