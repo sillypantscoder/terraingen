@@ -168,7 +168,7 @@ class Scene {
 		this.controls = null
 		// Scene/camera
 		this.scene = new THREE.Scene();
-		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+		this.camera = new THREE.PerspectiveCamera(110, window.innerWidth / window.innerHeight, 0.1, 1000);
 		// Setup the renderer
 		this.renderer = new THREE.WebGLRenderer({ alpha: true });
 		this.renderer.setClearColor(0x000000, 0);
@@ -202,5 +202,14 @@ class Scene {
 	}
 	addOrbitControls() {
 		this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+	}
+	/**
+	 * @param {SceneObject} object
+	 */
+	remove(object) {
+		this.objects.splice(this.objects.indexOf(object), 1)
+		for (var i = 0; i < object.three_objects.length; i++) {
+			this.scene.remove(object.three_objects[i])
+		}
 	}
 }

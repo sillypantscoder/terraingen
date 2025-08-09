@@ -4103,6 +4103,7 @@
 
 		}
 
+		/** @param {THREE.Vector3} v */
 		copy( v ) {
 
 			this.x = v.x;

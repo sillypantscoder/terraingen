@@ -176,7 +176,7 @@ class NoiseTerrainChunkGenerator extends ChunkGenerator {
 				var columnHeight = this.world.noise.noiseXYZ(
 					((16*x)+cx) / 4,
 					((16*z)+cz) / 4,
-				0) * 5
+				0) * 20
 				for (var cy = 0; cy < 16; cy++) {
 					if ((16*y)+cy <= columnHeight) chunk.setBlock(cx, cy, cz, new Block.Grass())
 					if ((16*y)+cy <= columnHeight - 1) chunk.setBlock(cx, cy, cz, new Block.Dirt())

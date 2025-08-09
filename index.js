@@ -8,10 +8,10 @@ scene.add(light2)
 
 // Generate world
 var world = new World(1, (world) => new NoiseTerrainChunkGenerator(world))
-for (let cx of [-2, -1, 0, 1, 2]) {
-	for (let cy of [-2, -1, 0, 1, 2]) {
-		for (let cz of [-2, -1, 0, 1, 2]) {
-			Rendering.getPlanesForChunk(world.generateChunk(cx, cy, cz), false).forEach((v) => scene.add(v))
+for (let cx of [-1, 0, 1]) {
+	for (let cy of [-1, 0, 1]) {
+		for (let cz of [-1, 0, 1]) {
+			world.generateChunk(cx, cy, cz)
 		}
 	}
 }
@@ -19,6 +19,7 @@ for (let cx of [-2, -1, 0, 1, 2]) {
 // Create player
 scene.camera.position.set(16, 8, 16)
 scene.add(new PlayerCamera(scene.camera, scene.renderer.domElement, world))
+scene.add(new PlayerRenderLoader(() => scene.camera.position.clone(), world, (o) => scene.add(o), (o) => scene.remove(o)))
 
 // animation loop
 scene.animate()

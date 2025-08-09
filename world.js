@@ -174,7 +174,7 @@ class World {
 		var chunkX = Math.floor(x / 16)
 		var chunkY = Math.floor(y / 16)
 		var chunkZ = Math.floor(z / 16)
-		var chunk = this.getChunk(chunkX, chunkY, chunkZ)
+		var chunk = this.generateChunk(chunkX, chunkY, chunkZ)
 		var blockX = x - (chunkX * 16)
 		var blockY = y - (chunkY * 16)
 		var blockZ = z - (chunkZ * 16)
